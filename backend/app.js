@@ -4,6 +4,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 
+import studentRoutes from "./src/routes/student.routes.js";
+import recommendationRoutes from "./src/routes/recommendation.routes.js";
+
 dotenv.config();
 
 const app = express();
@@ -27,5 +30,7 @@ import internshipRoutes from "./src/routes/internship.routes.js";
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/internship", internshipRoutes);
+app.use("/api/student", studentRoutes);
+app.use("/api/recommend", recommendationRoutes);
 
 export default app;
