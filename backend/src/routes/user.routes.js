@@ -1,43 +1,44 @@
 
+
 import express from "express";
 import { registerUser, loginUser, logoutUser, refreshAccessToken } from "../controllers/user.controller.js";
-import { protect } from "../middlewares/auth.middleware.js";
-import multer from "multer";
 
-const userRouter = express.Router();
+const router = express.Router();
 
-// Multer config for file upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/temp"); // local path to temporarily store uploaded files
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-});
-const upload = multer({ storage });
+// 👇 simple routes without multer
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.post("/logout", logoutUser);
+router.post("/refresh-token", refreshAccessToken);
 
-// ✅ Register route with file upload
-userRouter.post(
-  "/register",
-  upload.fields([
-    { name: "avatar", maxCount: 1 },
-    { name: "coverImage", maxCount: 1 }
-  ]),
-  registerUser
-);
-
-// ✅ Login, Logout, Refresh routes
-userRouter.post("/login", loginUser);
-userRouter.post("/logout", protect, logoutUser);
-userRouter.post("/refresh-token", refreshAccessToken);
-
-export default userRouter;
+export default router;
 
 
 
 
 
+
+// code 2
+// import express from "express";
+// import { registerUser, loginUser, logoutUser, refreshAccessToken } from "../controllers/user.controller.js";
+// import { protect } from "../middlewares/auth.middleware.js";
+// import multer from "multer";
+
+// const userRouter = express.Router();
+
+
+
+// // ✅ Login, Logout, Refresh routes
+// userRouter.post("/login", loginUser);
+// userRouter.post("/logout", protect, logoutUser);
+// userRouter.post("/refresh-token", refreshAccessToken);
+
+// export default userRouter;
+
+
+
+
+//code 1
 // // routes/user.routes.js
 // import { Router } from "express";
 // import { registerUser, loginUser, logoutUser, refreshAccessToken } from "../controllers/user.controller.js";

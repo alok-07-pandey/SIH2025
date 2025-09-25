@@ -7,7 +7,7 @@ import connectDB from "./src/db/db.js";
 
 // ✅ Test route (for Render / root check)
 app.get("/", (req, res) => {
-  res.send("🚀 Backend is running successfully!");
+  res.send("🚀 Backend is running successfully! by Alok ");
 });
 
 // Connect to MongoDB and start server
