@@ -22,6 +22,9 @@ app.use(cookieParser());
 import userRouter from "./src/routes/user.routes.js";
 import internshipRoutes from "./src/routes/internship.routes.js";
 
+
+
+
 app.use("/api/v1/users", userRouter);
 app.use("/api/internship", internshipRoutes);
 
