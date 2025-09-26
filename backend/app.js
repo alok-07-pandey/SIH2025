@@ -1,3 +1,4 @@
+// app.js
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -33,10 +34,11 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true, limit: "20kb" }));
-app.use(express.static("public"));
-app.use(cookieParser());
+// ✅ Middleware
+app.use(express.json({ limit: "16kb" }));            // JSON parser
+app.use(express.urlencoded({ extended: true, limit: "20kb" })); // URL parser
+app.use(cookieParser());                             // Cookie parser
+app.use(express.static("public"));                   // Static files (if any)
 
 // ✅ API Routes
 app.use("/api/v1/users", userRouter);   // Auth routes
