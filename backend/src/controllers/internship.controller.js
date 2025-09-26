@@ -4,36 +4,37 @@ import axios from "axios";
 
 export const submitInternship = async (req, res) => {
   try {
-    console.log("📩 Received internship submission:", req.body);
+    console.log("📩 Internship form data:", req.body);
+    console.log("📎 Uploaded file:", req.file);
 
-    // Save to DB
-    const newEntry = await Internship.create(req.body);
+    // Agar file upload hui hai to uska path le lo
+    const resumePath = req.file ? req.file.path : null;
+
+    // DB entry create karo
+    const bodyData = { ...req.body, resumePath };
+    const newEntry = await Internship.create(bodyData);
+
     console.log("✅ Saved internship entry:", newEntry._id);
 
-    // Call ML FastAPI
-    const mlUrl = "https://sih2025-1-qet3.onrender.com/recommend";  // agar ML API same host (if backend merged) ya alag se
-    // agar ML API alag ho to uska URL put karo
+    // Call ML API (yahan tum apna ML service ka URL use karna)
+    const mlUrl = "https://<tumhara-ml-service-url>/recommend";
     const mlResponse = await axios.post(mlUrl, {
-      student_id: newEntry._id.toString(),  // ya agar tum student_id approach use karte ho
+      student_id: newEntry._id.toString(),
       top_n: 5,
     });
 
-    console.log("🔄 ML response:", mlResponse.data);
-
-    // Return to frontend
     res.status(201).json({
       message: "Internship submitted and recommendations fetched",
-      recommendations: mlResponse.data.recommendations || mlResponse.data,  // adjust according to your ML response shape
+      recommendations: mlResponse.data.recommendations || mlResponse.data,
     });
   } catch (error) {
     console.error("❌ Error in submitInternship:", error);
-    return res.status(500).json({
+    res.status(500).json({
       message: "Server error during internship submission",
       error: error.toString(),
     });
   }
 };
-
 
 
 // // src/controllers/internship.controller.js
