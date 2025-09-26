@@ -4,7 +4,8 @@ import { submitInternship } from "../controllers/internship.controller.js";
 
 const router = express.Router();
 
-router.post("/submit", submitInternship);
+
+router.post("/submit", upload.single("resume"), submitInternship);
 
 export default router;
 
