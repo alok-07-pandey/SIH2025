@@ -8,6 +8,10 @@ import recommendationRoutes from "./src/routes/recommendation.routes.js";
 import userRouter from "./src/routes/user.routes.js";
 import internshipRoutes from "./src/routes/internship.routes.js";
 
+
+
+
+
 dotenv.config();
 
 const app = express();
