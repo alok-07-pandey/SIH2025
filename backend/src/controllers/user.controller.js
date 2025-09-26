@@ -47,8 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     username: username.toLowerCase(),
     password,
-    avatar: "",
-    coverImage: "",
+    
   });
 
   console.log("✅ User created:", user._id);
