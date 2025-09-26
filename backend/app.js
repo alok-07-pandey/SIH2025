@@ -43,7 +43,7 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 // Routes
-app.use("/api/v1/users", userRouter);
+app.use("/", userRouter);
 app.use("/api/internship", internshipRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/recommend", recommendationRoutes);
