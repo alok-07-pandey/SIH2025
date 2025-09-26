@@ -25,39 +25,44 @@ const generateTokens = async (userId) => {
 };
 
 // Register User
-const registerUser = asyncHandler(async (req, res) => {
-  console.log("📩 Register request body:", req.body);
+import User from "../models/user.model.js";
 
-  const { fullName, email, username, password } = req.body;
+export const registerUser = async (req, res) => {
+  try {
+    console.log("📩 Register request body:", req.body);
+    console.log("📸 Files:", req.files);
 
-  if ([fullName, email, username, password].some((f) => !f?.trim())) {
-    console.error("❌ Missing required fields");
-    throw new ApiError(400, "All fields are required");
+    const { fullName, username, email, password } = req.body;
+
+    // agar avatar compulsory hai
+    if (!req.files || !req.files.avatar) {
+      return res.status(400).json({ success: false, message: "Avatar is required" });
+    }
+
+    const avatarUrl = await uploadOnCloudinary(req.files.avatar[0].path);
+
+    const user = new User({
+      fullName,
+      username,
+      email,
+      password,
+      avatar: avatarUrl,
+    });
+
+    const savedUser = await user.save();
+    console.log("✅ User saved in DB:", savedUser);
+
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      data: savedUser,
+    });
+  } catch (error) {
+    console.error("❌ Register error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
+};
 
-  const existedUser = await User.findOne({ $or: [{ email }, { username }] });
-  if (existedUser) {
-    console.error("❌ User already exists:", existedUser.email, existedUser.username);
-    throw new ApiError(409, "User already exists");
-  }
-
-  console.log("🛠 Creating new user...");
-  const user = await User.create({
-    fullName,
-    email,
-    username: username.toLowerCase(),
-    password,
-    
-  });
-
-  console.log("✅ User created:", user._id);
-
-  const createdUser = await User.findById(user._id).select("-password -refreshToken");
-
-  res
-    .status(201)
-    .json(new ApiResponse(201, createdUser, "User registered successfully"));
-});
 
 // Login User
 const loginUser = asyncHandler(async (req, res) => {
