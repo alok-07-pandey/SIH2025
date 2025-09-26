@@ -1,9 +1,15 @@
-// middlewares/multer.middleware.js
 import multer from "multer";
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "./public/temp"),
-  filename: (req, file, cb) => cb(null, file.originalname),
+const upload = multer({
+  dest: "uploads/",  // folder for storing uploads
 });
 
-export const upload = multer({ storage });
+
+// // middlewares/multer.middleware.js
+// import multer from "multer";
+
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, "./public/temp"),
+//   filename: (req, file, cb) => cb(null, file.originalname),
+// });
+
+// export const upload = multer({ storage });
