@@ -1,15 +1,53 @@
 // src/controllers/internship.controller.js
 import { Internship } from "../models/internship.model.js";
+import axios from "axios";
 
-export const findInternships = async (req, res) => {
+export const submitInternship = async (req, res) => {
   try {
-    const filters = req.body;
-    const internships = await Internship.find(filters);
-    res.status(200).json({ success: true, data: internships });
+    console.log("📩 Received internship submission:", req.body);
+
+    // Save to DB
+    const newEntry = await Internship.create(req.body);
+    console.log("✅ Saved internship entry:", newEntry._id);
+
+    // Call ML FastAPI
+    const mlUrl = "https://sih2025-1-qet3.onrender.com/recommend";  // agar ML API same host (if backend merged) ya alag se
+    // agar ML API alag ho to uska URL put karo
+    const mlResponse = await axios.post(mlUrl, {
+      student_id: newEntry._id.toString(),  // ya agar tum student_id approach use karte ho
+      top_n: 5,
+    });
+
+    console.log("🔄 ML response:", mlResponse.data);
+
+    // Return to frontend
+    res.status(201).json({
+      message: "Internship submitted and recommendations fetched",
+      recommendations: mlResponse.data.recommendations || mlResponse.data,  // adjust according to your ML response shape
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("❌ Error in submitInternship:", error);
+    return res.status(500).json({
+      message: "Server error during internship submission",
+      error: error.toString(),
+    });
   }
 };
+
+
+
+// // src/controllers/internship.controller.js
+// import { Internship } from "../models/internship.model.js";
+
+// export const findInternships = async (req, res) => {
+//   try {
+//     const filters = req.body;
+//     const internships = await Internship.find(filters);
+//     res.status(200).json({ success: true, data: internships });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
 
 
 // // controllers/internship.controller.js
